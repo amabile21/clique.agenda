@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="pt-br" data-escala-fonte="1">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="clique.agenda - Agenda simples para pequenos comerciantes e profissionais autônomos">
+  <title>clique.agenda</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+
+  <header class="cabecalho-app">
+    <div class="cabecalho-esquerda">
+      <h1 class="logo" id="logo">clique.agenda</h1>
+    </div>
+
+    <div class="area-pesquisa">
+      <div class="agrupador-pesquisa">
+        <input type="text" id="input-pesquisa-contato" placeholder="Buscar compromisso por contato..." autocomplete="off">
+        <span class="icone-pesquisa">&#128269;</span>
+        <div class="lista-sugestoes" id="lista-sugestoes-contato">
+          <div class="cabecalho-lista-sugestoes">Clientes mais frequentes:</div>
+          <div class="itens-lista-sugestoes" id="itens-sugestoes-contato"></div>
+        </div>
+      </div>
+
+      <div class="agrupador-pesquisa">
+        <input type="text" id="input-pesquisa-titulo" placeholder="Buscar compromisso por título...">
+        <span class="icone-pesquisa">&#128269;</span>
+      </div>
+    </div>
+
+    <div class="controles-cabecalho">
+      <button class="botao-controle" id="btn-diminuir-fonte" title="Diminuir texto">-</button>
+      <button class="botao-controle" id="btn-aumentar-fonte" title="Aumentar texto">+</button>
+    </div>
+  </header>
+
+  <div class="container-app">
+    <main class="conteudo-principal">
+      <div class="cabecalho-visao">
+        <h2 id="titulo-visao">Carregando...</h2>
+        <div class="container-adicionar-inicio" id="container-adicionar-inicio">
+          <button class="botao-adicionar" id="btn-abrir-modal-adicionar">Adicionar</button>
+        </div>
+      </div>
+
+      <div class="lista-lembretes" id="lista-lembretes"></div>
+      <div class="lista-compromissos" id="lista-compromissos"></div>
+    </main>
+
+    <aside class="barra-lateral">
+      <div class="categoria-lateral">
+        <h3>Ver Agenda</h3>
+        <button class="link-lateral" id="link-hoje">Hoje</button>
+        <button class="link-lateral" id="link-esta-semana">Esta semana</button>
+        <button class="link-lateral" id="link-este-mes">Este mês</button>
+        <button class="link-lateral" id="link-90-dias">Próximos 90 dias</button>
+      </div>
+
+      <div class="categoria-lateral">
+        <h3>Contatos</h3>
+        <button class="link-lateral" id="link-adicionar-contato">Adicionar Contato</button>
+        <button class="link-lateral" id="link-ver-contatos">Ver contatos</button>
+      </div>
+    </aside>
+  </div>
+
+  <footer class="rodape-app">
+    <div class="rodape-centro">
+      desenvolvido por <a href="https://www.linkedin.com/in/amabileantunes/" target="_blank">Amabile Antunes</a>
+    </div>
+  </footer>
+
+  <template id="template-cartao-lembrete">
+    <div class="cartao cartao-lembrete">
+      <button class="circulo-conclusao" title="Concluir lembrete"></button>
+      <div class="linha-cabecalho-cartao">
+        <div class="titulo-cartao"></div>
+      </div>
+      <div class="etiqueta-cartao">Lembrete</div>
+      <div class="observacao-cartao" hidden></div>
+      <div class="acoes-cartao">
+        <button class="botao-cartao acao-editar">Editar</button>
+        <button class="botao-cartao perigo acao-apagar">Apagar</button>
+      </div>
+    </div>
+  </template>
+
+  <template id="template-cartao-compromisso">
+    <div class="cartao cartao-compromisso">
+      <button class="circulo-conclusao" title="Concluir compromisso"></button>
+      <div class="linha-cabecalho-cartao">
+        <div class="titulo-cartao"></div>
+      </div>
+      <div class="etiqueta-cartao">Compromisso</div>
+      <div class="meta-cartao">
+        <span class="meta-hora"><strong>Hora:</strong> <span class="valor-hora"></span></span>
+        <span class="meta-data" hidden><strong>Data:</strong> <span class="valor-data"></span></span>
+        <span class="meta-contato" hidden><strong>Cliente:</strong> <span class="valor-contato"></span></span>
+      </div>
+      <div class="observacao-cartao" hidden></div>
+      <div class="acoes-cartao">
+        <button class="botao-cartao acao-editar">Editar</button>
+        <button class="botao-cartao perigo acao-apagar">Apagar</button>
+      </div>
+    </div>
+  </template>
+
+  <template id="template-item-contato">
+    <div class="cartao-contato">
+      <div class="nome-contato"></div>
+      <div class="detalhes-contato">
+        <div class="detalhe-telefone" hidden><strong>Tel:</strong> <span class="valor-telefone"></span></div>
+        <div class="detalhe-email" hidden><strong>E-mail:</strong> <span class="valor-email"></span></div>
+      </div>
+      <div class="acoes-cartao">
+        <button class="botao-cartao acao-editar-contato">Editar</button>
+        <button class="botao-cartao perigo acao-apagar-contato">Apagar</button>
+      </div>
+    </div>
+  </template>
+
+  <div class="sobreposicao-modal" id="modal-item">
+    <div class="caixa-modal">
+      <div class="cabecalho-modal">
+        <h3 id="titulo-modal-item">Novo Item</h3>
+        <button class="btn-fechar" id="btn-fechar-modal-item">&times;</button>
+      </div>
+      <div class="abas-modal" id="abas-modal-item">
+        <button type="button" class="botao-aba ativa" data-tipo="lembrete">Lembrete</button>
+        <button type="button" class="botao-aba" data-tipo="compromisso">Compromisso</button>
+      </div>
+      <form id="formulario-item">
+        <input type="hidden" id="id-item">
+        <div class="grupo-formulario">
+          <label for="titulo-item">Título <span class="obrigatorio">*</span></label>
+          <input type="text" id="titulo-item" required placeholder="Ex: Atendimento cliente">
+        </div>
+        <div id="campos-compromisso" hidden>
+          <div class="grupo-formulario">
+            <label for="contato-item">Cliente / Contato</label>
+            <select id="contato-item">
+              <option value="">Nenhum</option>
+            </select>
+          </div>
+          <div class="linha-formulario">
+            <div class="grupo-formulario">
+              <label for="data-item">Data <span class="obrigatorio">*</span></label>
+              <input type="date" id="data-item">
+            </div>
+            <div class="grupo-formulario">
+              <label for="hora-item">Hora <span class="obrigatorio">*</span></label>
+              <input type="time" id="hora-item">
+            </div>
+          </div>
+        </div>
+        <div class="grupo-formulario">
+          <label for="observacao-item">Observações</label>
+          <textarea id="observacao-item" rows="3" placeholder="Detalhes adicionais..."></textarea>
+        </div>
+        <div class="rodape-modal">
+          <button type="button" class="btn btn-secundario" id="btn-cancelar-modal-item">Cancelar</button>
+          <button type="submit" class="btn btn-primario">Salvar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="sobreposicao-modal" id="modal-contato">
+    <div class="caixa-modal">
+      <div class="cabecalho-modal">
+        <h3 id="titulo-modal-contato">Novo Contato</h3>
+        <button class="btn-fechar" id="btn-fechar-modal-contato">&times;</button>
+      </div>
+      <form id="formulario-contato">
+        <input type="hidden" id="id-contato">
+        <div class="grupo-formulario">
+          <label for="nome-contato">Nome <span class="obrigatorio">*</span></label>
+          <input type="text" id="nome-contato" required placeholder="Ex: João da Silva">
+        </div>
+        <div class="grupo-formulario">
+          <label for="telefone-contato">Telefone</label>
+          <input type="text" id="telefone-contato" placeholder="Ex: (11) 98765-4321">
+        </div>
+        <div class="grupo-formulario">
+          <label for="email-contato">E-mail</label>
+          <input type="email" id="email-contato" placeholder="Ex: joao@email.com">
+        </div>
+        <div class="rodape-modal">
+          <button type="button" class="btn btn-secundario" id="btn-cancelar-modal-contato">Cancelar</button>
+          <button type="submit" class="btn btn-primario">Salvar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="sobreposicao-modal" id="modal-confirmacao">
+    <div class="caixa-modal caixa-confirmacao">
+      <h3 id="titulo-confirmacao">Confirmar Ação</h3>
+      <p id="mensagem-confirmacao">Você tem certeza?</p>
+      <div class="rodape-modal rodape-confirmacao">
+        <button class="btn btn-secundario" id="btn-confirmar-nao">Não</button>
+        <button class="btn btn-perigo" id="btn-confirmar-sim">Sim</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="agenda.js"></script>
+</body>
+</html>
