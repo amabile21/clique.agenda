@@ -3,16 +3,6 @@ import sys
 import webview
 from controller.controller import ControladorAgenda
 
-class Logger:
-    def __init__(self, status_log):
-        self.status_log = status_log
-        self.caminho = 'logs.txt'
-
-    def escrever(self, texto: str):
-        if self.status_log:
-            with open(self.caminho, 'a', encoding='UTF-8') as arquivo:
-                arquivo.writelines(texto + '\n')
-
 def obter_caminho_html():
     if hasattr(sys, '_MEIPASS'):
         pasta_base = sys._MEIPASS
@@ -26,9 +16,8 @@ def obter_caminho_html():
         sys.exit(1)
     return caminho_index
 
-def iniciar_app(status_log=False):
-    logger = Logger(status_log=status_log)
-    controlador = ControladorAgenda(logger)
+def iniciar_app():
+    controlador = ControladorAgenda()
     caminho_html = obter_caminho_html()
 
     webview.create_window(
@@ -53,7 +42,7 @@ def mostrar_menu():
     if comando == "1":
         criar_executavel()
     else:
-        iniciar_app(status_log=True)
+        iniciar_app()
 
 if __name__ == "__main__":
     e_executavel = getattr(sys, "frozen", False)

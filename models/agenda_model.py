@@ -15,15 +15,6 @@ class ContatoModel:
         return novo_id
 
     @staticmethod
-    def obter_por_id(contato_id):
-        conexao = banco.obter_conexao()
-        cursor = conexao.cursor()
-        cursor.execute("SELECT * FROM contatos WHERE id = ?", (contato_id,))
-        linha = cursor.fetchone()
-        conexao.close()
-        return dict(linha) if linha else None
-
-    @staticmethod
     def listar_todos():
         conexao = banco.obter_conexao()
         cursor = conexao.cursor()

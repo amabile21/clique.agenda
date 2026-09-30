@@ -51,5 +51,12 @@ def inicializar_banco():
     );
     """)
 
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS dados_exemplo (
+        id INTEGER PRIMARY KEY CHECK (id = 1),
+        carregado_em TEXT NOT NULL
+    );
+    """)
+
     conexao.commit()
     conexao.close()

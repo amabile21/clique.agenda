@@ -20,7 +20,7 @@
     <div class="area-pesquisa">
       <div class="agrupador-pesquisa">
         <input type="text" id="input-pesquisa-contato" placeholder="Buscar compromisso por contato..." autocomplete="off">
-        <span class="icone-pesquisa">&#128269;</span>
+        <span class="icone-pesquisa">Buscar</span>
         <div class="lista-sugestoes" id="lista-sugestoes-contato">
           <div class="cabecalho-lista-sugestoes">Clientes mais frequentes:</div>
           <div class="itens-lista-sugestoes" id="itens-sugestoes-contato"></div>
@@ -29,7 +29,7 @@
 
       <div class="agrupador-pesquisa">
         <input type="text" id="input-pesquisa-titulo" placeholder="Buscar compromisso por título...">
-        <span class="icone-pesquisa">&#128269;</span>
+        <span class="icone-pesquisa">Buscar</span>
       </div>
     </div>
 
@@ -65,6 +65,11 @@
         <h3>Contatos</h3>
         <button class="link-lateral" id="link-adicionar-contato">Adicionar Contato</button>
         <button class="link-lateral" id="link-ver-contatos">Ver contatos</button>
+      </div>
+
+      <div class="categoria-lateral">
+        <h3>Demonstração</h3>
+        <button class="link-lateral" id="link-carregar-exemplos">Carregar exemplos</button>
       </div>
     </aside>
   </div>
@@ -162,6 +167,7 @@
           <label for="observacao-item">Observações</label>
           <textarea id="observacao-item" rows="3" placeholder="Detalhes adicionais..."></textarea>
         </div>
+        <p class="mensagem-erro" id="erro-item" role="alert" hidden></p>
         <div class="rodape-modal">
           <button type="button" class="btn btn-secundario" id="btn-cancelar-modal-item">Cancelar</button>
           <button type="submit" class="btn btn-primario">Salvar</button>

@@ -2,7 +2,6 @@ const estado = {
   visaoAtual: 'inicio',
   dataSelecionada: new Date(),
   escalaFonte: 1,
-  listaContatos: [],
   tipoPesquisaAtiva: '',
   termoPesquisaAtiva: '',
   tipoItemFormulario: 'lembrete',
@@ -38,6 +37,7 @@ const contatoItem = document.getElementById('contato-item');
 const dataItem = document.getElementById('data-item');
 const horaItem = document.getElementById('hora-item');
 const observacaoItem = document.getElementById('observacao-item');
+const erroItem = document.getElementById('erro-item');
 
 const modalContato = document.getElementById('modal-contato');
 const tituloModalContato = document.getElementById('titulo-modal-contato');
@@ -54,19 +54,16 @@ const mensagemConfirmacao = document.getElementById('mensagem-confirmacao');
 document.addEventListener('DOMContentLoaded', () => {
   carregarConfiguracoes();
   configurarEventos();
-  
-  if (window.pywebview) {
-    window.pywebview.api.inicializar_banco().then(() => {
-      atualizarCacheContatos();
-      renderizarVisaoAtual();
-    });
+
+  const iniciarInterface = () => {
+    atualizarCacheContatos();
+    renderizarVisaoAtual();
+  };
+
+  if (window.pywebview && window.pywebview.api) {
+    iniciarInterface();
   } else {
-    window.addEventListener('pywebviewready', () => {
-      window.pywebview.api.inicializar_banco().then(() => {
-        atualizarCacheContatos();
-        renderizarVisaoAtual();
-      });
-    });
+    window.addEventListener('pywebviewready', iniciarInterface, { once: true });
   }
 });
 
@@ -88,6 +85,26 @@ function configurarEventos() {
   document.getElementById('link-90-dias').addEventListener('click', () => alternarVisao('90dias'));
   document.getElementById('link-adicionar-contato').addEventListener('click', () => abrirModalContato());
   document.getElementById('link-ver-contatos').addEventListener('click', () => alternarVisao('contatos'));
+  document.getElementById('link-carregar-exemplos').addEventListener('click', () => {
+    exibirConfirmacao(
+      'Carregar exemplos',
+      'Serão adicionados contatos, compromissos e lembretes fictícios. Seus dados atuais não serão alterados.',
+      () => window.pywebview.api.carregar_dados_exemplo().then(res => {
+        if (!res.sucesso) {
+          window.alert(res.erro || 'Não foi possível carregar os exemplos.');
+          return;
+        }
+        if (res.ja_carregados) {
+          window.alert('Os exemplos já foram carregados nesta agenda.');
+          return;
+        }
+        atualizarCacheContatos();
+        renderizarVisaoAtual();
+        window.alert('Exemplos carregados.');
+      })
+      .catch(erro => window.alert(erro.message || 'Não foi possível carregar os exemplos.'))
+    );
+  });
 
   btnDiminuirFonte.addEventListener('click', () => {
     if (estado.escalaFonte > 1) {
@@ -202,7 +219,7 @@ function renderizarAgendaDiaria(dados) {
     listaCompromissos.innerHTML = '<div class="estado-vazio">Nada para hoje.</div>';
     return;
   }
-  compromissos.forEach(c => listaCompromissos.appendChild(criarCartaoCompromisso(c)));
+  compromissos.forEach(c => listaCompromissos.appendChild(criarCartaoCompromisso(c, true)));
   lembretes.forEach(l => listaLembretes.appendChild(criarCartaoLembrete(l)));
 }
 
@@ -391,7 +408,6 @@ function criarItemContato(c) {
 
 function atualizarCacheContatos() {
   window.pywebview.api.obter_contatos().then(contatos => {
-    estado.listaContatos = contatos;
     contatoItem.innerHTML = '<option value="">Nenhum</option>';
     contatos.forEach(c => {
       const opt = document.createElement('option');
@@ -428,6 +444,8 @@ function mostrarSugestoesContatos() {
 
 function abrirModalItem(item = null, tipoForçado = null) {
   formularioItem.reset();
+  erroItem.textContent = '';
+  erroItem.hidden = true;
   idItem.value = item ? item.id : '';
   
   if (item) {
@@ -496,14 +514,24 @@ function enviarFormularioItem(e) {
 
     if (id) {
       window.pywebview.api.atualizar_compromisso(parseInt(id, 10), titulo, obs, data, hora, contatoId, estado.itemSendoEditado.concluido).then(res => {
-        if (res.sucesso) { fecharModalItem(); renderizarVisaoAtual(); }
+        tratarRespostaCompromisso(res);
       });
     } else {
       window.pywebview.api.adicionar_compromisso(titulo, obs, data, hora, contatoId).then(res => {
-        if (res.sucesso) { fecharModalItem(); renderizarVisaoAtual(); }
+        tratarRespostaCompromisso(res);
       });
     }
   }
+}
+
+function tratarRespostaCompromisso(res) {
+  if (res.sucesso) {
+    fecharModalItem();
+    renderizarVisaoAtual();
+    return;
+  }
+  erroItem.textContent = res.erro || 'Não foi possível salvar o compromisso.';
+  erroItem.hidden = false;
 }
 
 function abrirModalContato(contato = null) {

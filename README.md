@@ -1,144 +1,113 @@
 # clique.agenda
 
-Aplicação desktop para gerenciamento de compromissos, lembretes e contatos.
-
-## Sobre o projeto
-
-O **clique.agenda** é uma aplicação desktop desenvolvida em Python para auxiliar pequenos comerciantes, profissionais autônomos e usuários que desejam organizar suas atividades de forma simples e prática.
-
-A aplicação utiliza armazenamento local, dispensando servidores ou conexão com a internet para o funcionamento.
+Agenda desktop para organizar compromissos, lembretes e contatos em um só lugar. A interface é construída com HTML, CSS e JavaScript e aberta em uma janela nativa por meio do PyWebView. Os dados ficam em um banco SQLite local.
 
 ## Funcionalidades
 
-* Cadastro, edição e exclusão de compromissos;
-* Cadastro, edição e exclusão de lembretes;
-* Gerenciamento de contatos;
-* Pesquisa por título ou contato;
-* Visualização dos compromissos por:
+- Criar, editar, excluir e concluir compromissos e lembretes.
+- Associar contatos aos compromissos e consultar horário, data e observações.
+- Cadastrar, editar, excluir, filtrar e consultar contatos, incluindo telefone e e-mail.
+- Pesquisar compromissos por título, observação ou nome do contato, com sugestões de contatos frequentes.
+- Consultar a agenda de hoje, da semana, do mês ou dos próximos 90 dias.
+- Ajustar o tamanho da fonte em quatro níveis; a preferência fica salva no navegador.
+- Validar campos obrigatórios e impedir o cadastro de compromissos em datas ou horários passados.
+- Carregar contatos, compromissos e lembretes fictícios para demonstração, sem substituir dados existentes.
 
-  * Hoje;
-  * Esta semana;
-  * Este mês;
-  * Próximos 90 dias;
-* Marcação de tarefas concluídas;
-* Ajuste do tamanho da fonte para melhorar a acessibilidade.
+## Capturas da interface
 
-## Tecnologias utilizadas
+### Tela inicial
 
-* Python
-* PyWebView
-* HTML5
-* CSS3
-* JavaScript (ES6)
-* SQLite
+![Agenda de hoje](imagens/hoje.png)
+
+### Agenda semanal
+
+![Agenda semanal](imagens/semana.png)
+
+### Agenda dos próximos 90 dias
+
+![Agenda dos próximos 90 dias](imagens/90-dias.png)
+
+### Cadastro de lembrete
+
+![Cadastro de lembrete](imagens/lembrete.png)
+
+### Cadastro de compromisso
+
+![Cadastro de compromisso](imagens/compromisso.png)
+
+### Lista de contatos
+
+![Lista de contatos](imagens/contatos.png)
+
+### Cadastro de contato
+
+![Cadastro de contato](imagens/adicionar-contato.png)
+
+## Tecnologias
+
+- Python 3.14
+- PyWebView 6.2.1
+- PyInstaller 6.21.0
+- HTML5, CSS3 e JavaScript (ES6)
+- SQLite
 
 ## Estrutura do projeto
 
 ```text
-CLIQUE.AGENDA/ 
-├── .venv/ 
-├── controller/ 
-│ └── controller.py 
-├── imagens/ 
-├── models/ 
-│ └── agenda_model.py 
-├── view/ 
-│ └── agenda.js 
-│ └── estilo.css 
-│ └── index.html 
-├── .gitignore 
-├── database.py 
-├── main.py 
-├── README.md 
+clique.agenda/
+├── controller/
+│   └── controller.py
+├── imagens/
+├── models/
+│   └── agenda_model.py
+├── view/
+│   ├── agenda.js
+│   ├── estilo.css
+│   └── index.html
+├── database.py
+├── main.py
+├── README.md
 └── requirements.txt
 ```
 
-### Principais arquivos
+`main.py` inicializa a janela e oferece as opções de abrir o app ou criar o executável. `controller/controller.py` conecta a interface às operações da agenda. `models/agenda_model.py` implementa o acesso aos registros, e `database.py` inicializa o SQLite.
 
-| Arquivo           | Descrição                                                  |
-| ----------------- | ---------------------------------------------------------- |
-| `main.py`         | Ponto de entrada da aplicação.                             |
-| `controller.py`   | Controla a comunicação entre interface e banco de dados.   |
-| `database.py`     | Responsável pelas operações de persistência dos dados.     |
-| `agenda_model.py` | Modelos utilizados pela aplicação.                         |
-| `view/`           | Interface gráfica desenvolvida com HTML, CSS e JavaScript. |
+## Requisitos
 
-## Interface
+- Windows
+- Python 3.14
 
-### Tela inicial
+As dependências Python estão fixadas em `requirements.txt`.
 
-![Tela inicial](imagens/telainicial.png)
+## Instalação e execução
 
-### Agenda semanal
+Clone o repositório e instale as dependências:
 
-![Agenda semanal](imagens/estasemana.png)
-
-### Cadastro de compromisso
-
-![Cadastro de compromisso](imagens/adicionarcompromisso.png)
-
-### Contatos
-
-![Contato](imagens/contatos.png)
-
-## Como executar
-
-### Pré-requisitos
-
-* Python 3.14
-* Ambiente virtual (opcional, mas recomendado)
-
-### Instalação
-
-Clone o repositório:
-
-```bash
+```powershell
 git clone https://github.com/amabile21/clique.agenda.git
+cd clique.agenda
+python -m pip install -r requirements.txt
 ```
 
-Instale as dependências:
+Inicie o programa:
 
-```bash
-pip install -r requirements.txt
-```
-
-Execute a aplicação:
-
-```bash
+```powershell
 python main.py
 ```
 
-Ao iniciar, será exibido um menu no terminal:
+No menu exibido no terminal, escolha `2` para abrir a aplicação.
+
+## Criar o executável
+
+Com as dependências instaladas, execute `python main.py` e escolha `1`. O PyInstaller gera o executável para Windows em:
 
 ```text
-Escolha uma opção:
-(1) Criar executável
-(2) Abrir app
->:
+dist/clique.agenda.exe
 ```
 
-### Opção 1 — Criar executável
+## Dados locais
 
-Selecionando a opção **1**, o projeto utiliza o **PyInstaller** para gerar automaticamente um arquivo executável (`.exe`) para Windows.
-
-Após a conclusão do processo, o executável será disponibilizado na pasta:
-
-```text
-dist/
-└── clique.agenda.exe
-```
-
-### Opção 2 — Abrir aplicação
-
-Selecionando a opção **2**, o sistema inicia normalmente utilizando o PyWebView, abrindo a interface desktop da aplicação.
-
-## Banco de dados
-
-A aplicação utiliza o banco de dados SQLite, criado automaticamente na primeira execução caso ainda não exista.
-
-## Licença
-
-Este projeto foi desenvolvido para fins acadêmicos.
+O banco `agenda.db` é criado automaticamente na primeira execução. Durante o desenvolvimento, ele fica na pasta do projeto. Na versão empacotada, o arquivo fica em `%APPDATA%\clique.agenda\agenda.db`.
 
 ## Autora
 
